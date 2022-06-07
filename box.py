@@ -1,6 +1,5 @@
 import pygame
 class Box:
-    width = 50
     def __init__(self, x, y, width, height):
         self.x = x
         self.y = y

@@ -18,3 +18,5 @@ class Shooter:
             self.direction = -1
         if (not(self.position.y < 0 and self.direction == 1) and not(self.position.y + self.width > 600 and self.direction == -1)):
             self.position.xy = (self.position.x, self.position.y - self.direction*320*dt) 
+    def reset(self):
+        self.position.y = 300
