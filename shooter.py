@@ -7,16 +7,25 @@ class Shooter:
     hasBullet = True
     def __init__(self):
         self.position.xy = 50, 400
-    def setDirection(self, direction):
-        self.direction = direction
+        self.gravity = 125
+        self.acceleration = pygame.math.Vector2(0, self.gravity)
+        self.velocity = pygame.math.Vector2(0, 0)
+        self.jumping = False
     def update(self, dt):
-        self.direction = 0
-        keys = pygame.key.get_pressed()  #checking pressed keys
-        if keys[pygame.K_SPACE]:
-            self.direction = 1
-        if not keys[pygame.K_SPACE]:
-            self.direction = -1
-        if (not(self.position.y < 0 and self.direction == 1) and not(self.position.y + self.width > 600 and self.direction == -1)):
-            self.position.xy = (self.position.x, self.position.y - self.direction*320*dt) 
+        self.jump(dt)
+        if self.jumping:
+            self.velocity.y *= .5
+            self.jumping = False
+    def jump(self, dt):
+        if self.position.y < 600:
+            self.velocity.y += self.acceleration.y * dt * 5
+            if self.velocity.y > 250: self.velocity.y = 250
+            if self.velocity.y < -400: self.velocity.y = -400
+            self.position.y += self.velocity.y * (dt * 2) + (self.position.y * 0.5) * (dt * dt)
+        if self.position.y > 600:
+            self.position.y = 600 - self.width
+            self.velocity.y = 0
+        
     def reset(self):
-        self.position.y = 300
+        self.position.y = 400
+        self.velocity.y = -200
