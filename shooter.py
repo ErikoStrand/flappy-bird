@@ -25,7 +25,3 @@ class Shooter:
         if self.position.y > 600:
             self.position.y = 600 - self.width
             self.velocity.y = 0
-        
-    def reset(self):
-        self.position.y = 400
-        self.velocity.y = -200

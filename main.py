@@ -71,11 +71,18 @@ while main_menu:
                     jump = False
                     shooter.jumping = True
                     shooter.velocity.y -= 15000
-
+                
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     jump = True
-            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1 and jump:
+                    jump = False
+                    shooter.jumping = True
+                    shooter.velocity.y -= 15000
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    jump = True
         #update
         for box in boxes:
             box.update(dt)
