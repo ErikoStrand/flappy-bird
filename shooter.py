@@ -25,3 +25,4 @@ class Shooter:
         if self.position.y > 600:
             self.position.y = 600 - self.width
             self.velocity.y = 0
+            
