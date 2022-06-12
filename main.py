@@ -5,6 +5,7 @@ from shooter import Shooter
 from box import Box
 import numpy as np
 from button import button
+from particles import particles
 pygame.init()
 pygame.font.init()
 
@@ -20,7 +21,8 @@ text_color = (150, 150, 150)
 start_button = pygame.Rect(125, 200, 150, 50)
 clock = pygame.time.Clock()
 boxes = []
-shooter = Shooter()
+particles_list = []
+shooter = Shooter(50, 400)
 NEW_PILLAR = pygame.USEREVENT
 PLAY_TIME = pygame.USEREVENT + 1
 SAVE_TIMER = pygame.USEREVENT + 2
@@ -33,7 +35,7 @@ main_menu = True
 stats_show = False
 score = 0
 jump = True
-stats = {0: ["Jumps: ", 0, ""], 1: ["deaths: ", 0, ""], 2: ["high_score: ", 0, ""], 3: ["pillars_passed: ", 0, ""], 4: ["time: ", 0, "s"]} 
+#stats = {0: ["Jumps: ", 0, ""], 1: ["deaths: ", 0, ""], 2: ["high_score: ", 0, ""], 3: ["pillars_passed: ", 0, ""], 4: ["time: ", 0, "s"]} 
 #with open("stats.dat", "wb") as f:
     #pickle.dump(stats, f) 
 with open("stats.dat", "rb") as f:
@@ -65,7 +67,7 @@ while main_menu:
                 pygame.draw.rect(display, active, start_button)
                 pygame.display.flip()
                 pygame.time.wait(200)
-                print(stats)
+                #print(stats)
                 main_menu = False
                 running = True
         if stats_button.update(event, display, active):
@@ -137,6 +139,7 @@ while main_menu:
                     
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1 and jump:
+                    particles_list.append(particles(display, shooter.position.x, shooter.position.y + 10, 25))
                     jump = False
                     shooter.jumping = True
                     shooter.velocity.y -= 15000
@@ -151,7 +154,16 @@ while main_menu:
                 boxes.remove(box)
         
         shooter.update(dt)
-        
+        if shooter.position.y < 0:
+            shooter.position.y = 0
+            shooter.velocity.y = 0
+        if shooter.position.y >= 575:
+            shooter.position.y = 575
+            shooter.velocity.y = 0
+        for particle in particles_list:
+            particle.update(dt)
+            if particle.x < -50:
+                particles_list.remove(particle)
         for box in boxes:
             if hit_score.colliderect(box):
                 score += 1/38
@@ -168,6 +180,8 @@ while main_menu:
         
         pygame.draw.rect(display, bird, player)
         
+        for particle in particles_list:
+            particle.draw()
         for box in boxes:
             pygame.draw.rect(display, (100, 100, 100), box.rect)       
         pygame.display.flip()
